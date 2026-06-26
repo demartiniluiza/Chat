@@ -121,6 +121,40 @@ wss.on("connection", (socket) => {
         usuarios: listaUsuarios(),
       });
     }
+
+    //recebe mensagem de texto
+    if(msg.tipo === "mensagem"){
+      const cliente = clientes.get(socket);
+      if(!cliente) return;
+
+      const texto = String(msg.texto).trim().slice(0,500);
+
+      if(!texto) return;
+
+      broadcast({
+        tipo: "mensagem",
+        username: cliente.username,
+        color: cliente.color,
+        texto: texto,
+        hora: new Date().toLocaleTimeString("pt-BR", {
+          hour: '2-digit', minute: "2-digit"
+        }),
+      });
+
+      //4.2 - cliente desconectou
+      socket.on("close", () => {
+        const cliente = clientes.get(socket);
+        if(!cliente) return;
+
+        cliente.delete(socket);
+
+        broadcast({
+        tipo: "sistema",
+        texto: `${cliente.username} saiu da sala`,
+        usuarios: listaUsuarios(),
+      });
+      })
+    }
   });
 });
 
