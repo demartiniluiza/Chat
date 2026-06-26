@@ -212,7 +212,7 @@ console.log(msg);
 
     usuarios.forEach(({username, color}) =>{
       const li = document.createElement("li");
-      li.innerHTML `
+      li.innerHTML = `
       <span class="status-dot"></span>
       <span style="color":${color}">${escaparHTML(username)}</span>
       `;
